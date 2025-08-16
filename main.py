@@ -9,6 +9,7 @@ from shot import Shot
 
 def main():
     pygame.init()
+    score_font = pygame.font.SysFont(None, 48)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
 
@@ -49,6 +50,10 @@ def main():
                     shot.kill()
 
         screen.fill("black")
+
+        score_text = score_font.render(f"Score: {score:04}", True, "white")
+        score_rect = score_text.score_rect(topright=(SCREEN_WIDTH - 20, 20))
+        screen.blit(score_text, score_rect)
 
         for obj in drawable:
             obj.draw(screen)
