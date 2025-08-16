@@ -1,5 +1,6 @@
 import sys
 import pygame
+import json
 from constants import *
 from player import Player
 from asteroid import Asteroid
@@ -7,9 +8,28 @@ from asteroidfield import AsteroidField
 from shot import Shot
 
 
+def load_scores():
+    try:
+        with open("scores.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+def save_scores(scores):
+    with open("scores.json", "w") as f:
+        json.dump(scores, f)
+
+def add_new_score(scores, new_score):
+    scores.append(new_score)
+    scores.sort(reverse=True)
+    return scores[:10]
+
 def main():
     pygame.init()
+    
     score_font = pygame.font.SysFont(None, 48)
+    top_scores_font = pygame.font.SysFont(None, 30)
+
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
 
@@ -29,10 +49,13 @@ def main():
 
     dt = 0
     score = 0
+    top_scores = load_scores()
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                top_scores = add_new_score(top_scores, score)
+                save_scores(top_scores)
                 return
 
         updatable.update(dt)
@@ -40,6 +63,8 @@ def main():
         for asteroid in asteroids:
             if asteroid.collides_with(player):
                 print("Game over!")
+                top_scores = add_new_score(top_scores, score)
+                save_scores(top_scores)
                 sys.exit()
 
         for asteroid in asteroids:
@@ -51,16 +76,22 @@ def main():
 
         screen.fill("black")
 
-        score_text = score_font.render(f"Score: {score:04}", True, "white")
-        score_rect = score_text.score_rect(topright=(SCREEN_WIDTH - 20, 20))
-        screen.blit(score_text, score_rect)
-
         for obj in drawable:
             obj.draw(screen)
 
+        score_text = score_font.render(f"Score: {score:04}", True, "white")
+        score_rect = score_text.get_rect(topright=(SCREEN_WIDTH - 20, 20))
+        screen.blit(score_text, score_rect)
+
+        header_text = top_scores_font.render("Top Scores:", True, "white")
+        screen.blit(header_text, (20, 20))
+
+        for i, top_score in enumerate(top_scores[:3]):
+            score_line = top_scores_font.render(f"{i + 1}: {top_score}", True, "white")
+            screen.blit(score_line, (20, 50 + i * 30))
+
         pygame.display.flip()
 
-        # limit the framerate to 60 FPS
         dt = clock.tick(60) / 1000
 
 
