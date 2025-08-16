@@ -18,6 +18,22 @@ Spacebar - Fire a bullet
 
 ___
 
+## Scoring System & High Scores
+
+To make the game more competitive, a scoring system has been implemented. Destroying asteroids now awards points based on their size:
+
+- Large Asteroid: 3 points
+
+- Medium Asteroid: 2 points
+
+- Small Asteroid: 1 point
+
+Your current score is displayed in the top-right corner of the screen.
+
+The game also features a high-score system that persists between sessions. The top 10 scores are stored in a local file, and the top 3 are displayed in the top-left corner of the screen. This allows players to track their performance over time.
+
+___
+
 ## Technologies Used
 
 This project was developed using:
@@ -44,7 +60,9 @@ ___
 
 This project serves as a solid foundation for a more personalized version of the game. We will be building on this code to add custom features and make it more my own. The planned changes include:
 
-- Add a scoring system
+- ~~Add a scoring system~~
+
+- Mesure the length of the game in hh:mm:ss format.
 
 - Implement multiple lives and respawning
 
