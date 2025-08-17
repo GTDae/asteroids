@@ -19,6 +19,8 @@ class Asteroid(CircleShape):
         score_to_add = self.points
         self.kill()
 
+        Explosion(self.position.x, self.position.y, self.radius)
+
         if self.radius > ASTEROID_MIN_RADIUS:
             new_radius = self.radius - ASTEROID_MIN_RADIUS
             random_angle = random.uniform(20, 50)

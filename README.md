@@ -20,7 +20,7 @@ ___
 
 ## Scoring System & High Scores
 
-To make the game more competitive, a scoring system has been implemented. Destroying asteroids now awards points based on their size:
+To make the game more competitive, a scoring system has been implemented. Destroying asteroids now awards points based on their size
 
 - Large Asteroid: 3 points
 
@@ -30,7 +30,7 @@ To make the game more competitive, a scoring system has been implemented. Destro
 
 Your current score is displayed in the top-right corner of the screen.
 
-The game also features a high-score system that persists between sessions. The top 10 scores are stored in a local file, and the top 3 are displayed in the top-left corner of the screen. This allows players to track their performance over time.
+The game also features a high-score system that persists between sessions. The top 10 scores are stored in a local file, and the top 3 are displayed in the top-left corner of the screen. The high scores also include a session time in hh:mm:ss format, allowing players to compare not only their score, but also the efficiency and duration of their game.
 
 ___
 
@@ -62,11 +62,11 @@ This project serves as a solid foundation for a more personalized version of the
 
 - ~~Add a scoring system~~
 
-- Measure the length of the game in hh:mm:ss format.
+- ~~Measure the length of the game in hh:mm:ss format.~~
+
+- ~~Add an explosion effect for the asteroids~~
 
 - Implement multiple lives and respawning
-
-- Add an explosion effect for the asteroids
 
 - Add acceleration to the player movement
 
