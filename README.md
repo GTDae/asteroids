@@ -66,13 +66,13 @@ This project serves as a solid foundation for a more personalized version of the
 
 - ~~Add an explosion effect for the asteroids~~
 
+- Building wrapper for the game, with menus and different pages.
+
 - Implement multiple lives and respawning
 
 - Add acceleration to the player movement
 
 - Make the objects wrap around the screen instead of disappearing
-
-- Add a background image
 
 - Create different weapon types
 
