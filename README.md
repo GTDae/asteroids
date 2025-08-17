@@ -62,7 +62,7 @@ This project serves as a solid foundation for a more personalized version of the
 
 - ~~Add a scoring system~~
 
-- Mesure the length of the game in hh:mm:ss format.
+- Measure the length of the game in hh:mm:ss format.
 
 - Implement multiple lives and respawning
 
