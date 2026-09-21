@@ -35,6 +35,7 @@ class Player(CircleShape):
         if keys[pygame.K_SPACE] and self.shoot_cooldown <= 0:
             self.shoot()
         self.shoot_cooldown = max(0, self.shoot_cooldown - dt)
+        self.wrap_position()
 
     def shoot(self):
         shot = Shot(self.position.x, self.position.y)

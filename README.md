@@ -74,7 +74,7 @@ This project serves as a solid foundation for a more personalized version of the
 
 - Add acceleration to the player movement
 
-- Make the objects wrap around the screen instead of disappearing
+- ~~Make the objects wrap around the screen instead of disappearing~~
 
 - Create different weapon types
 

@@ -14,6 +14,7 @@ class Asteroid(CircleShape):
 
     def update(self, dt):
         self.position += self.velocity * dt
+        self.wrap_position(margin=ASTEROID_MAX_RADIUS)
 
     def split(self):
         score_to_add = self.points
