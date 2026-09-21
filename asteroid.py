@@ -1,6 +1,7 @@
 import pygame
 import random
 from circleshape import CircleShape
+from explosion import Explosion
 from constants import *
 
 
