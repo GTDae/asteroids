@@ -30,12 +30,12 @@ class Explosion(pygame.sprite.Sprite):
 
     def draw(self, screen):
         for particle in self.particles:
-            particle.draw(screen)
+            pygame.draw.circle(screen, FLARE_AMBER, particle.position, particle.radius)
 
     def update(self, dt):
         for particle in self.particles:
-            particle.update(dt)
-        
+            particle.position += particle.velocity * dt
+
         self.lifetime += dt
         
         if self.lifetime >= EXPLOSION_DURATION:

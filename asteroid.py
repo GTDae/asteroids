@@ -4,14 +4,32 @@ from circleshape import CircleShape
 from explosion import Explosion
 from constants import *
 
+ASTEROID_LUMP_POINTS = 10
+ASTEROID_LUMP_VARIANCE = 0.25  # each point sits +/- 25% off the base radius
+
 
 class Asteroid(CircleShape):
     def __init__(self, x, y, radius):
         super().__init__(x, y, radius)
         self.points = int(self.radius / ASTEROID_MIN_RADIUS)
+        self.shape_offsets = self._generate_lumpy_shape()
+
+    def _generate_lumpy_shape(self):
+        # Precomputed once so the asteroid keeps a consistent lumpy silhouette
+        # as it moves, instead of a new random shape every frame.
+        offsets = []
+        angle_step = 360 / ASTEROID_LUMP_POINTS
+        for i in range(ASTEROID_LUMP_POINTS):
+            angle = i * angle_step + random.uniform(-angle_step * 0.3, angle_step * 0.3)
+            lump_radius = self.radius * random.uniform(
+                1 - ASTEROID_LUMP_VARIANCE, 1 + ASTEROID_LUMP_VARIANCE
+            )
+            offsets.append(pygame.Vector2(lump_radius, 0).rotate(angle))
+        return offsets
 
     def draw(self, screen):
-        pygame.draw.circle(screen, "white", self.position, self.radius, 2)
+        points = [self.position + offset for offset in self.shape_offsets]
+        pygame.draw.polygon(screen, FLARE_AMBER, points, 2)
 
     def update(self, dt):
         self.position += self.velocity * dt

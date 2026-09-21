@@ -11,15 +11,20 @@ class Player(CircleShape):
         self.shoot_cooldown = 0.0
 
     def draw(self, screen):
-        pygame.draw.polygon(screen, "white", self.triangle(), 2)
+        pygame.draw.polygon(screen, SIGNAL_GREEN, self.ship_shape(), 2)
 
-    def triangle(self):
+    def ship_shape(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
-        a = self.position + forward * self.radius
-        b = self.position - forward * self.radius - right
-        c = self.position - forward * self.radius + right
-        return [a, b, c]
+        right = pygame.Vector2(0, 1).rotate(self.rotation + 90)
+
+        nose = self.position + forward * self.radius
+        left_wingtip = self.position - forward * self.radius * 0.6 - right * self.radius * 0.9
+        left_notch = self.position - forward * self.radius * 0.2 - right * self.radius * 0.35
+        tail = self.position - forward * self.radius * 0.5
+        right_notch = self.position - forward * self.radius * 0.2 + right * self.radius * 0.35
+        right_wingtip = self.position - forward * self.radius * 0.6 + right * self.radius * 0.9
+
+        return [nose, left_wingtip, left_notch, tail, right_notch, right_wingtip]
 
     def update(self, dt):
         keys = pygame.key.get_pressed()
