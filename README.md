@@ -16,6 +16,8 @@ D - Turn right
 
 Spacebar - Fire a bullet
 
+Esc - Return to the main menu from High Scores, README, or Credits
+
 ___
 
 ## Scoring System & High Scores
@@ -66,7 +68,7 @@ This project serves as a solid foundation for a more personalized version of the
 
 - ~~Add an explosion effect for the asteroids~~
 
-- Building wrapper for the game, with menus and different pages.
+- ~~Building wrapper for the game, with menus and different pages.~~
 
 - Implement multiple lives and respawning
 
