@@ -31,6 +31,25 @@ def add_new_score(scores, new_score, new_time):
     return updated, made_high_score
 
 
+def draw_lives(screen, lives, max_lives, x, y):
+    icon_size = 12
+    spacing = 32
+    for i in range(max_lives):
+        cx = x + i * spacing
+        points = [
+            (cx, y - icon_size),
+            (cx - icon_size * 0.7, y + icon_size * 0.6),
+            (cx, y + icon_size * 0.2),
+            (cx + icon_size * 0.7, y + icon_size * 0.6),
+        ]
+        if i < lives:
+            pygame.draw.polygon(screen, SIGNAL_GREEN, points, 2)
+        else:
+            pygame.draw.polygon(screen, PANEL, points, 2)
+            pygame.draw.line(screen, FLARE_AMBER, (cx - icon_size, y - icon_size), (cx + icon_size, y + icon_size), 2)
+            pygame.draw.line(screen, FLARE_AMBER, (cx - icon_size, y + icon_size), (cx + icon_size, y - icon_size), 2)
+
+
 def main():
     pygame.init()
 
@@ -61,6 +80,7 @@ def main():
     dt = 0
     score = 0
     session_time = 0.0
+    lives = PLAYER_MAX_LIVES
     top_scores = load_scores()
     post_game_message = None
 
@@ -78,16 +98,21 @@ def main():
         if current_state == GameState.PLAYING:
             updatable.update(dt)
 
-            for asteroid in asteroids:
-                if asteroid.collides_with(player):
-                    top_scores, made_high_score = add_new_score(top_scores, score, session_time)
-                    save_scores(top_scores)
-                    if made_high_score:
-                        post_game_message = f"New high score! You scored {score} points."
-                    else:
-                        post_game_message = f"Game over! You scored {score} points."
-                    current_state = GameState.HIGH_SCORES
-                    break
+            if player.invulnerable_timer <= 0:
+                for asteroid in asteroids:
+                    if player.collides_with(asteroid):
+                        lives -= 1
+                        if lives > 0:
+                            player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                        else:
+                            top_scores, made_high_score = add_new_score(top_scores, score, session_time)
+                            save_scores(top_scores)
+                            if made_high_score:
+                                post_game_message = f"New high score! You scored {score} points."
+                            else:
+                                post_game_message = f"Game over! You scored {score} points."
+                            current_state = GameState.HIGH_SCORES
+                        break
 
             for asteroid in asteroids:
                 for shot in shots:
@@ -112,6 +137,10 @@ def main():
             time_string = f"{hours:02}:{minutes:02}:{seconds:02}"
             time_text = top_scores_font.render(f"Time: {time_string}", True, SIGNAL_GREEN)
             screen.blit(time_text, (20, 140))
+
+            lives_label = top_scores_font.render("Lives:", True, SIGNAL_GREEN)
+            screen.blit(lives_label, (20, 175))
+            draw_lives(screen, lives, PLAYER_MAX_LIVES, 105, 190)
 
             header_text = top_scores_font.render("Top Scores:", True, SIGNAL_GREEN)
             screen.blit(header_text, (20, 20))
@@ -206,6 +235,7 @@ def main():
                 asteroid_field = AsteroidField()
                 score = 0
                 session_time = 0.0
+                lives = PLAYER_MAX_LIVES
                 post_game_message = None
 
             # Transition to the new state

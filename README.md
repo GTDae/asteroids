@@ -32,6 +32,8 @@ To make the game more competitive, a scoring system has been implemented. Destro
 
 Your current score is displayed in the top-right corner of the screen.
 
+You start with 3 lives, shown as small ship icons in the top-left corner - a crossed-out icon means that life is gone. Getting hit costs a life and respawns you at the centre of the screen with 2 seconds of blinking invulnerability; the game only ends once all 3 lives are used.
+
 The game also features a high-score system that persists between sessions. The top 10 scores are stored in a local file, and the top 3 are displayed in the top-left corner of the screen. The high scores also include a session time in hh:mm:ss format, allowing players to compare not only their score, but also the efficiency and duration of their game.
 
 ___
@@ -76,7 +78,7 @@ This project serves as a solid foundation for a more personalized version of the
 
 - ~~Building wrapper for the game, with menus and different pages.~~
 
-- Implement multiple lives and respawning
+- ~~Implement multiple lives and respawning~~
 
 - Add acceleration to the player movement
 
@@ -86,7 +88,7 @@ This project serves as a solid foundation for a more personalized version of the
 
 - ~~Make the asteroids lumpy instead of perfectly round~~
 
-- Make the ship have a triangular hit box instead of a circular one
+- ~~Make the ship have a triangular hit box instead of a circular one~~
 
 - Add a shield power-up
 
