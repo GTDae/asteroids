@@ -12,14 +12,14 @@ from gamestates import GameState
 
 def load_scores():
     try:
-        with open("scores.json", "r") as f:
+        with open("score.json", "r") as f:
             return json.load(f)
     except FileNotFoundError:
         return []
 
 
 def save_scores(scores):
-    with open("scores.json", "w") as f:
+    with open("score.json", "w") as f:
         json.dump(scores, f)
 
 
@@ -61,7 +61,8 @@ def main():
     intro_start_time = pygame.time.get_ticks()
 
     while True:
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 top_scores = add_new_score(top_scores, score, session_time)
                 save_scores(top_scores)
@@ -149,7 +150,7 @@ def main():
             # Get mouse position and button clicks
             mouse_pos = pygame.mouse.get_pos()
             mouse_clicked = False
-            for event in pygame.event.get():
+            for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_clicked = True
             
@@ -180,6 +181,94 @@ def main():
             
             # Transition to the new state
             current_state = new_state
+
+        elif current_state == GameState.HIGH_SCORES:
+            screen.fill("black")
+
+            title_text = score_font.render("HIGH SCORES", True, "white")
+            title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
+            screen.blit(title_text, title_rect)
+
+            if top_scores:
+                for i, top_score in enumerate(top_scores[:10]):
+                    time_string = f"{int(top_score['time'] // 3600):02}:{int((top_score['time'] % 3600) // 60):02}:{int(top_score['time'] % 60):02}"
+                    line_text = top_scores_font.render(
+                        f"{i + 1}: {top_score['score']} ({time_string})", True, "white"
+                    )
+                    line_rect = line_text.get_rect(center=(SCREEN_WIDTH // 2, 180 + i * 35))
+                    screen.blit(line_text, line_rect)
+            else:
+                empty_text = top_scores_font.render("No scores yet", True, "white")
+                empty_rect = empty_text.get_rect(center=(SCREEN_WIDTH // 2, 180))
+                screen.blit(empty_text, empty_rect)
+
+            back_text = top_scores_font.render("Press ESC to return to menu", True, "white")
+            back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
+            screen.blit(back_text, back_rect)
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                current_state = GameState.MENU
+
+        elif current_state == GameState.README:
+            screen.fill("black")
+
+            title_text = score_font.render("README", True, "white")
+            title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 80))
+            screen.blit(title_text, title_rect)
+
+            readme_lines = [
+                "Survive as long as possible by navigating a spaceship",
+                "through an asteroid field and shooting down incoming threats.",
+                "",
+                "Large asteroids split into two medium ones, medium ones",
+                "split into two small ones. Small asteroids are destroyed on impact.",
+                "",
+                "Controls: W forward, S backward, A/D turn, Spacebar to fire.",
+            ]
+            for i, line in enumerate(readme_lines):
+                line_text = top_scores_font.render(line, True, "white")
+                line_rect = line_text.get_rect(center=(SCREEN_WIDTH // 2, 160 + i * 35))
+                screen.blit(line_text, line_rect)
+
+            back_text = top_scores_font.render("Press ESC to return to menu", True, "white")
+            back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
+            screen.blit(back_text, back_rect)
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                current_state = GameState.MENU
+
+        elif current_state == GameState.CREDITS:
+            screen.fill("black")
+
+            title_text = score_font.render("CREDITS", True, "white")
+            title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
+            screen.blit(title_text, title_rect)
+
+            credit_lines = [
+                "Asteroid Hunter",
+                "Guided project via Boot.dev",
+                "Extended and maintained by GTDae",
+                "Built with Python and Pygame",
+            ]
+            for i, line in enumerate(credit_lines):
+                line_text = top_scores_font.render(line, True, "white")
+                line_rect = line_text.get_rect(center=(SCREEN_WIDTH // 2, 200 + i * 40))
+                screen.blit(line_text, line_rect)
+
+            back_text = top_scores_font.render("Press ESC to return to menu", True, "white")
+            back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
+            screen.blit(back_text, back_rect)
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                current_state = GameState.MENU
+
+        elif current_state == GameState.QUIT:
+            top_scores = add_new_score(top_scores, score, session_time)
+            save_scores(top_scores)
+            return
 
         pygame.display.flip()
 
