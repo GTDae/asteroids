@@ -1,4 +1,3 @@
-import sys
 import pygame
 import json
 from constants import *
@@ -24,9 +23,12 @@ def save_scores(scores):
 
 
 def add_new_score(scores, new_score, new_time):
-    scores.append({"score": new_score, "time": new_time})
-    scores.sort(key=lambda x: x['score'], reverse=True)
-    return scores[:10]
+    new_entry = {"score": new_score, "time": new_time}
+    updated = scores + [new_entry]
+    updated.sort(key=lambda x: x['score'], reverse=True)
+    updated = updated[:10]
+    made_high_score = new_entry in updated
+    return updated, made_high_score
 
 
 def main():
@@ -57,6 +59,7 @@ def main():
     score = 0
     session_time = 0.0
     top_scores = load_scores()
+    post_game_message = None
 
     current_state = GameState.INTRO
     intro_start_time = pygame.time.get_ticks()
@@ -65,7 +68,7 @@ def main():
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
-                top_scores = add_new_score(top_scores, score, session_time)
+                top_scores, _ = add_new_score(top_scores, score, session_time)
                 save_scores(top_scores)
                 return
 
@@ -74,10 +77,14 @@ def main():
 
             for asteroid in asteroids:
                 if asteroid.collides_with(player):
-                    print("Game over!")
-                    top_scores = add_new_score(top_scores, score, session_time)
+                    top_scores, made_high_score = add_new_score(top_scores, score, session_time)
                     save_scores(top_scores)
-                    sys.exit()
+                    if made_high_score:
+                        post_game_message = f"New high score! You scored {score} points."
+                    else:
+                        post_game_message = f"Game over! You scored {score} points."
+                    current_state = GameState.HIGH_SCORES
+                    break
 
             for asteroid in asteroids:
                 for shot in shots:
@@ -180,6 +187,19 @@ def main():
                 screen.blit(option_text, text_rect)
                 y_offset += 60 # Spacing between options
             
+            # Starting a fresh game - reset the world so a previous run doesn't carry over
+            if new_state == GameState.PLAYING:
+                updatable.empty()
+                drawable.empty()
+                asteroids.empty()
+                shots.empty()
+                explosions.empty()
+                player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                asteroid_field = AsteroidField()
+                score = 0
+                session_time = 0.0
+                post_game_message = None
+
             # Transition to the new state
             current_state = new_state
 
@@ -189,6 +209,12 @@ def main():
             title_text = score_font.render("HIGH SCORES", True, "white")
             title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
             screen.blit(title_text, title_rect)
+
+            if post_game_message:
+                message_color = "gold" if "New high score" in post_game_message else "white"
+                message_text = top_scores_font.render(post_game_message, True, message_color)
+                message_rect = message_text.get_rect(center=(SCREEN_WIDTH // 2, 140))
+                screen.blit(message_text, message_rect)
 
             if top_scores:
                 for i, top_score in enumerate(top_scores[:10]):
@@ -267,7 +293,7 @@ def main():
                 current_state = GameState.MENU
 
         elif current_state == GameState.QUIT:
-            top_scores = add_new_score(top_scores, score, session_time)
+            top_scores, _ = add_new_score(top_scores, score, session_time)
             save_scores(top_scores)
             return
 
