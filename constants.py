@@ -1,6 +1,19 @@
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
+# GTHD brand palette
+SIGNAL_GREEN = (61, 255, 143)
+FLARE_AMBER = (255, 177, 78)
+INK_BLACK = (6, 10, 12)
+PANEL = (13, 21, 23)
+
+# GTHD brand assets
+FONT_HEADING_BOLD = "assets/fonts/ChakraPetch-Bold.ttf"
+FONT_HEADING_SEMIBOLD = "assets/fonts/ChakraPetch-SemiBold.ttf"
+FONT_BODY_REGULAR = "assets/fonts/IBMPlexMono-Regular.ttf"
+FONT_BODY_MEDIUM = "assets/fonts/IBMPlexMono-Medium.ttf"
+AVATAR_IMAGE = "assets/images/gt-avatar.png"
+
 ASTEROID_MIN_RADIUS = 20
 ASTEROID_KINDS = 3
 ASTEROID_SPAWN_RATE = 0.8  # seconds

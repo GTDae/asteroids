@@ -34,11 +34,14 @@ def add_new_score(scores, new_score, new_time):
 def main():
     pygame.init()
 
-    score_font = pygame.font.SysFont(None, 48)
-    top_scores_font = pygame.font.SysFont(None, 30)
+    score_font = pygame.font.Font(FONT_HEADING_BOLD, 48)
+    top_scores_font = pygame.font.Font(FONT_BODY_REGULAR, 30)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
+
+    avatar_image = pygame.image.load(AVATAR_IMAGE).convert_alpha()
+    avatar_image = pygame.transform.smoothscale(avatar_image, (160, 160))
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -93,12 +96,12 @@ def main():
                         score += points_earned
                         shot.kill()
 
-            screen.fill("black")
+            screen.fill(INK_BLACK)
 
             for obj in drawable:
                 obj.draw(screen)
 
-            score_text = score_font.render(f"Score: {score:04}", True, "white")
+            score_text = score_font.render(f"Score: {score:04}", True, SIGNAL_GREEN)
             score_rect = score_text.get_rect(topright=(SCREEN_WIDTH - 20, 20))
             screen.blit(score_text, score_rect)
 
@@ -107,42 +110,47 @@ def main():
             minutes = int((session_time % 3600) // 60)
             seconds = int(session_time % 60)
             time_string = f"{hours:02}:{minutes:02}:{seconds:02}"
-            time_text = top_scores_font.render(f"Time: {time_string}", True, "white")
+            time_text = top_scores_font.render(f"Time: {time_string}", True, SIGNAL_GREEN)
             screen.blit(time_text, (20, 140))
 
-            header_text = top_scores_font.render("Top Scores:", True, "white")
+            header_text = top_scores_font.render("Top Scores:", True, SIGNAL_GREEN)
             screen.blit(header_text, (20, 20))
 
             for i, top_score in enumerate(top_scores[:3]):
                 time_string = f"{int(top_score['time'] // 3600):02}:{int((top_score['time'] % 3600) // 60):02}:{int(top_score['time'] % 60):02}"
-                score_line = top_scores_font.render(f"{i + 1}: {top_score['score']} ({time_string})", True, "white")
+                score_line = top_scores_font.render(f"{i + 1}: {top_score['score']} ({time_string})", True, SIGNAL_GREEN)
                 screen.blit(score_line, (20, 50 + i * 30))
 
         elif current_state == GameState.INTRO:
-            screen.fill("black")
+            screen.fill(INK_BLACK)
 
             time_elapsed = (pygame.time.get_ticks() - intro_start_time) / 1000
 
             if time_elapsed < 3:
                 alpha = min(255, int(255 * (time_elapsed / 1.5)))
-                
-                gtd_text = score_font.render("GTDaeAvgJoe", True, (255, 255, 255))
-                presents_text = top_scores_font.render("Presents...", True, (255, 255, 255))
+
+                avatar_frame = avatar_image.copy()
+                avatar_frame.set_alpha(alpha)
+                avatar_rect = avatar_frame.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 130))
+                screen.blit(avatar_frame, avatar_rect)
+
+                gtd_text = score_font.render("GTDaeAvgJoe", True, SIGNAL_GREEN)
+                presents_text = top_scores_font.render("Presents...", True, SIGNAL_GREEN)
 
                 gtd_text.set_alpha(alpha)
                 presents_text.set_alpha(alpha)
 
-                gtd_rect = gtd_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 20))
-                presents_rect = presents_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 20))
+                gtd_rect = gtd_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 10))
+                presents_rect = presents_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 30))
 
                 screen.blit(gtd_text, gtd_rect)
                 screen.blit(presents_text, presents_rect)
 
             elif time_elapsed >= 3:
-                title_text = score_font.render("ASTEROID HUNTER", True, (255, 255, 255))
+                title_text = score_font.render("ASTEROID HUNTER", True, SIGNAL_GREEN)
                 title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
 
-                space_prompt_text = top_scores_font.render("Hit Space To Continue...", True, (255, 255, 255))
+                space_prompt_text = top_scores_font.render("Hit Space To Continue...", True, SIGNAL_GREEN)
                 space_prompt_rect = space_prompt_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50))
 
                 screen.blit(title_text, title_rect)
@@ -153,7 +161,7 @@ def main():
                 current_state = GameState.MENU
 
         elif current_state == GameState.MENU:
-            screen.fill("black")
+            screen.fill(INK_BLACK)
 
             # Get mouse position and button clicks
             mouse_pos = pygame.mouse.get_pos()
@@ -161,7 +169,7 @@ def main():
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_clicked = True
-            
+
             # Draw the menu options
             menu_options = [
                 ("START GAME", GameState.PLAYING),
@@ -175,18 +183,18 @@ def main():
             new_state = current_state
 
             for text, state in menu_options:
-                option_text = score_font.render(text, True, "white")
+                option_text = score_font.render(text, True, SIGNAL_GREEN)
                 text_rect = option_text.get_rect(center=(SCREEN_WIDTH // 2, y_offset))
-                
+
                 # Check if the mouse is hovering over an option
                 if text_rect.collidepoint(mouse_pos):
-                    option_text = score_font.render(text, True, "gold") # Highlight the text
+                    option_text = score_font.render(text, True, FLARE_AMBER)  # Highlight the text
                     if mouse_clicked:
                         new_state = state
 
                 screen.blit(option_text, text_rect)
-                y_offset += 60 # Spacing between options
-            
+                y_offset += 60  # Spacing between options
+
             # Starting a fresh game - reset the world so a previous run doesn't carry over
             if new_state == GameState.PLAYING:
                 updatable.empty()
@@ -204,14 +212,14 @@ def main():
             current_state = new_state
 
         elif current_state == GameState.HIGH_SCORES:
-            screen.fill("black")
+            screen.fill(INK_BLACK)
 
-            title_text = score_font.render("HIGH SCORES", True, "white")
+            title_text = score_font.render("HIGH SCORES", True, SIGNAL_GREEN)
             title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
             screen.blit(title_text, title_rect)
 
             if post_game_message:
-                message_color = "gold" if "New high score" in post_game_message else "white"
+                message_color = FLARE_AMBER if "New high score" in post_game_message else SIGNAL_GREEN
                 message_text = top_scores_font.render(post_game_message, True, message_color)
                 message_rect = message_text.get_rect(center=(SCREEN_WIDTH // 2, 140))
                 screen.blit(message_text, message_rect)
@@ -220,16 +228,16 @@ def main():
                 for i, top_score in enumerate(top_scores[:10]):
                     time_string = f"{int(top_score['time'] // 3600):02}:{int((top_score['time'] % 3600) // 60):02}:{int(top_score['time'] % 60):02}"
                     line_text = top_scores_font.render(
-                        f"{i + 1}: {top_score['score']} ({time_string})", True, "white"
+                        f"{i + 1}: {top_score['score']} ({time_string})", True, SIGNAL_GREEN
                     )
                     line_rect = line_text.get_rect(center=(SCREEN_WIDTH // 2, 180 + i * 35))
                     screen.blit(line_text, line_rect)
             else:
-                empty_text = top_scores_font.render("No scores yet", True, "white")
+                empty_text = top_scores_font.render("No scores yet", True, SIGNAL_GREEN)
                 empty_rect = empty_text.get_rect(center=(SCREEN_WIDTH // 2, 180))
                 screen.blit(empty_text, empty_rect)
 
-            back_text = top_scores_font.render("Press ESC to return to menu", True, "white")
+            back_text = top_scores_font.render("Press ESC to return to menu", True, SIGNAL_GREEN)
             back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
             screen.blit(back_text, back_rect)
 
@@ -238,9 +246,9 @@ def main():
                 current_state = GameState.MENU
 
         elif current_state == GameState.README:
-            screen.fill("black")
+            screen.fill(INK_BLACK)
 
-            title_text = score_font.render("README", True, "white")
+            title_text = score_font.render("README", True, SIGNAL_GREEN)
             title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 80))
             screen.blit(title_text, title_rect)
 
@@ -254,11 +262,11 @@ def main():
                 "Controls: W forward, S backward, A/D turn, Spacebar to fire.",
             ]
             for i, line in enumerate(readme_lines):
-                line_text = top_scores_font.render(line, True, "white")
+                line_text = top_scores_font.render(line, True, SIGNAL_GREEN)
                 line_rect = line_text.get_rect(center=(SCREEN_WIDTH // 2, 160 + i * 35))
                 screen.blit(line_text, line_rect)
 
-            back_text = top_scores_font.render("Press ESC to return to menu", True, "white")
+            back_text = top_scores_font.render("Press ESC to return to menu", True, SIGNAL_GREEN)
             back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
             screen.blit(back_text, back_rect)
 
@@ -267,9 +275,9 @@ def main():
                 current_state = GameState.MENU
 
         elif current_state == GameState.CREDITS:
-            screen.fill("black")
+            screen.fill(INK_BLACK)
 
-            title_text = score_font.render("CREDITS", True, "white")
+            title_text = score_font.render("CREDITS", True, SIGNAL_GREEN)
             title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
             screen.blit(title_text, title_rect)
 
@@ -280,11 +288,11 @@ def main():
                 "Built with Python and Pygame",
             ]
             for i, line in enumerate(credit_lines):
-                line_text = top_scores_font.render(line, True, "white")
+                line_text = top_scores_font.render(line, True, SIGNAL_GREEN)
                 line_rect = line_text.get_rect(center=(SCREEN_WIDTH // 2, 200 + i * 40))
                 screen.blit(line_text, line_rect)
 
-            back_text = top_scores_font.render("Press ESC to return to menu", True, "white")
+            back_text = top_scores_font.render("Press ESC to return to menu", True, SIGNAL_GREEN)
             back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 60))
             screen.blit(back_text, back_rect)
 

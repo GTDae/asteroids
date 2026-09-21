@@ -52,6 +52,12 @@ This setup showcases a modern development workflow using a powerful Linux backen
 
 ___
 
+## Visual Style
+
+The game has been re-skinned to match [GTHD's](https://gthd.co.za) brand identity: Signal Green and Flare Amber on an Ink Black background, Chakra Petch for headings, IBM Plex Mono for body/HUD text. The splash screen features the author's avatar from the GTHD blog. Asteroids are drawn as irregular (lumpy) polygons instead of perfect circles, and the player ship is a swept-wing silhouette instead of a plain triangle.
+
+___
+
 ## Guided Project
 
 This project was completed as a guided assignment from Boot.Dev, a platform focused on hands-on software development education. The project's structure and core logic were provided as part of a course curriculum, with additional features added to explore and extend the game's functionality.
@@ -78,7 +84,7 @@ This project serves as a solid foundation for a more personalized version of the
 
 - Create different weapon types
 
-- Make the asteroids lumpy instead of perfectly round
+- ~~Make the asteroids lumpy instead of perfectly round~~
 
 - Make the ship have a triangular hit box instead of a circular one
 
